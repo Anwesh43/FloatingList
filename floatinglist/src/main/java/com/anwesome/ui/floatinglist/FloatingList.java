@@ -35,11 +35,17 @@ public class FloatingList {
             h = size.y;
         }
     }
+    public void setOnItemSelectedListener(FloatingListView.OnItemSelectedListener onItemSelectedListener) {
+        if(floatingListView != null) {
+            floatingListView.setOnItemSelectedListener(onItemSelectedListener);
+        }
+    }
     public void addItem(String text) {
         if(!isShown) {
             floatingListView.addItem(text);
         }
     }
+
     public void addToParent() {
         if(!isShown) {
             floatingListView.setY(-h);
@@ -78,4 +84,5 @@ public class FloatingList {
             endAnim.addUpdateListener(this);
         }
     }
+
 }

@@ -90,6 +90,9 @@ public class FloatingListView extends View {
         public boolean handleTap(float x,float y) {
             return x>=this.x && x<=this.x+wItem && y>=this.y-hItem/2 && y<=this.y+hItem/2;
         }
+        public String getText() {
+            return text;
+        }
         public int hashCode() {
             return text.hashCode()+(int)(y);
         }
@@ -108,6 +111,9 @@ public class FloatingListView extends View {
                 if(factor > 1) {
                     isAnimated = false;
                     currItem.reset();
+                    if(onItemSelectedListener != null) {
+                        onItemSelectedListener.onItemSelected(currItem.getText());
+                    }
                     currItem = null;
                     invalidate();
                     floatingList.hide();
@@ -129,5 +135,12 @@ public class FloatingListView extends View {
                 postInvalidate();
             }
         }
+    }
+    private OnItemSelectedListener onItemSelectedListener;
+    public void setOnItemSelectedListener(OnItemSelectedListener onItemSelectedListener) {
+        this.onItemSelectedListener = onItemSelectedListener;
+    }
+    public interface OnItemSelectedListener {
+        void onItemSelected(String item);
     }
 }
