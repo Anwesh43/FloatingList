@@ -26,3 +26,7 @@
 ```
     list.show();
 ```
+
+#### Demo
+
+<img src="https://github.com/Anwesh43/FloatingList/blob/master/demos/floatinglist.gif" width="300px" height="500px">
