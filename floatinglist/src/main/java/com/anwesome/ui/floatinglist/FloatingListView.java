@@ -18,6 +18,7 @@ public class FloatingListView extends View {
     private int time = 0,w,h,size;
     private FloatingList floatingList;
     private AnimationHandler animationHandler;
+    private CloseButton closeButton;
     private ConcurrentLinkedQueue<FloatingListItem> floatingListItems = new ConcurrentLinkedQueue<>();
     public FloatingListView(Context context,FloatingList floatingList) {
         super(context);
@@ -32,7 +33,8 @@ public class FloatingListView extends View {
             h = canvas.getHeight();
             size = h/10;
             paint.setTextSize(size/2);
-            int x = w/10,y = size/2;
+            int x = w/10,y = size;
+            closeButton = new CloseButton(9*w/10,size,w/15);
             for(FloatingListItem floatingListItem:floatingListItems) {
                 floatingListItem.setDimension(x,y);
                 y += size;
@@ -43,6 +45,7 @@ public class FloatingListView extends View {
         for(FloatingListItem item:floatingListItems) {
             item.draw(canvas);
         }
+        closeButton.draw(canvas);
         time++;
         if(animationHandler != null) {
             animationHandler.animate();
@@ -50,6 +53,7 @@ public class FloatingListView extends View {
     }
     public boolean onTouchEvent(MotionEvent event) {
         if(event.getAction() == MotionEvent.ACTION_DOWN && animationHandler != null) {
+            float x = event.getX(),y = event.getY();
             FloatingListItem currItem = null;
             for(FloatingListItem floatingListItem:floatingListItems) {
                 if(floatingListItem.handleTap(event.getX(),event.getY())) {
@@ -59,6 +63,11 @@ public class FloatingListView extends View {
             }
             if(currItem != null) {
                 animationHandler.startAnimating(currItem);
+            }
+            else {
+                if (closeButton != null && closeButton.handleTap(x,y)) {
+                    floatingList.hide();
+                }
             }
         }
         return true;
@@ -142,5 +151,28 @@ public class FloatingListView extends View {
     }
     public interface OnItemSelectedListener {
         void onItemSelected(String item);
+    }
+    private class CloseButton {
+        private float x,y,size;
+        public CloseButton(float x,float y,float size) {
+            this.x = x;
+            this.y = y;
+            this.size = size;
+        }
+        public void draw(Canvas canvas) {
+            paint.setColor(Color.WHITE);
+            paint.setStrokeWidth(Math.min(w,h)/80);
+            for(int i=0;i<2;i++) {
+                canvas.save();
+                canvas.translate(x,y);
+                canvas.rotate(i*90+45);
+                canvas.drawLine(0,-size/2,0,size/2,paint);
+                canvas.restore();
+            }
+        }
+        public boolean handleTap(float x,float y) {
+            boolean condition = x>=this.x-size/2 && x<=this.x+size/2 && y>=this.y -size/2 && y<=this.y+size/2;
+            return condition;
+        }
     }
 }
