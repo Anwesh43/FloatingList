@@ -6,8 +6,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Point;
 import android.hardware.display.DisplayManager;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Display;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 
 /**
  * Created by anweshmishra on 15/06/17.
@@ -48,8 +51,17 @@ public class FloatingList {
 
     public void addToParent() {
         if(!isShown) {
+            activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
             floatingListView.setY(-h);
             activity.addContentView(floatingListView,new ViewGroup.LayoutParams(w,h));
+            if(activity instanceof AppCompatActivity) {
+                ActionBar actionBar =((AppCompatActivity) activity).getSupportActionBar();
+                actionBar.hide();
+            }
+            else {
+                android.app.ActionBar actionBar = activity.getActionBar();
+                actionBar.hide();
+            }
             isShown = true;
         }
     }
